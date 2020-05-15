@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layoutDirection="ltr"
+    android:background="#CC000000"
+    android:orientation="vertical"
+    tools:targetApi="28">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!-- Media info -->
+        <LinearLayout
+            android:paddingTop="15dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!-- @media.poster -->
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="145dp"
+                android:layout_height="160dp"
+                android:paddingLeft="26dp"
+                android:src="@drawable/load" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <!-- @media.title -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="26dp"
+                    android:paddingTop="5dp"
+                    android:text="Los Simpson"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="22dp" />
+                <!-- @media.rating -->
+                <RatingBar
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:paddingLeft="52dp"
+                    android:paddingTop="15dp"
+                    android:scaleX=".5"
+                    android:scaleY=".5"
+                    android:transformPivotX="0dp"
+                    android:transformPivotY="0dp" />
+                <!-- @media.description -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:textSize="10dp"
+                    android:paddingLeft="26dp"
+                    android:textColor="#CCFFFFFF"
+                    android:text="Narra la historia de una peculiar familia (Homer, Marge, Bart, Maggie y Lisa Simpson) y otros divertidos personajes de la localidad norteamericana de Springfield. Homer, el padre, es un desastroso inspector de seguridad de una central nuclear. Marge, la madre, es un ama de casa acostumbrada a soportar a su peculiar familia. Bart, de 10 años, intenta divertirse con travesuras de todo tipo. Lisa es la más inteligente de la familia, y Maggie, la más pequeña, es un bebé que todavía no habla, pero que juega un importante papel." />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+    <!-- Controllers -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!-- Buttons (Play/Pause, Audio, Captions) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingTop="4dp"
+            android:orientation="horizontal">
+            <!-- Play Pause-->
+            <ImageButton android:id="@id/exo_play" android:tint="#41a8ff"
+                style="@style/ExoMediaButton.Play"/>
+            <ImageButton android:id="@id/exo_pause" android:tint="#41a8ff"
+                style="@style/ExoMediaButton.Pause"/>
+            <!-- Audio/Captions -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:orientation="horizontal">
+                <ImageButton android:id="@+id/exo_audio" android:src="@drawable/audios" style="@style/ExoMediaButton" android:tint="#41a8ff" />
+                <ImageButton android:id="@+id/exo_captions" android:src="@drawable/captions" style="@style/ExoMediaButton" android:tint="#41a8ff"  />
+            </LinearLayout>
+        </LinearLayout>
+        <!-- Progress -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView android:id="@id/exo_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:includeFontPadding="false"
+                android:textColor="#FFBEBEBE"/>
+            <View android:id="@id/exo_progress_placeholder"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="26dp"/>
+            <TextView android:id="@id/exo_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:includeFontPadding="false"
+                android:textColor="#FFBEBEBE"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
