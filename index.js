@@ -1,148 +1,68 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
-
+import 'react-native-gesture-handler';
 import React, { Component } from 'react';
-
 import {
   AppRegistry,
-  Button,
-  NativeEventEmitter,
-  NativeModules,
-  Platform,
-  StyleSheet,
   Text,
-  TextInput,
-  View
+  View,
 } from 'react-native';
-
-import BatchedBridge from "react-native/Libraries/BatchedBridge/BatchedBridge";
-
-export class ExposedToJava {
-  extraMessage = "Be aware that this way of calling JavaScript is officially undocumented.\n\nIf possible, use events instead!";
-
-  setMessage(message) {
-    this.extraMessage = message;
-  }
-
-  /**
-   * If this is called from an activity that doesn't forward Android life-cycle events
-   * to React Native, the alert will appear to do nothing.
-   */
-  alert(message) {
-      alert(message + "\n\n" + this.extraMessage);
-  }
-}
-
-const exposedToJava = new ExposedToJava();
-BatchedBridge.registerCallableModule("JavaScriptVisibleToJava", exposedToJava);
-
-const activityStarter = NativeModules.ActivityStarter;
-const eventEmitterModule = NativeModules.EventEmitter;
-
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import SplashScreen from './screens/SplashScreen';
+import HomeScreen from './screens/HomeScreen';
+import UnknownUserScreen from './screens/UnknownUserScreen';
+import ExpiredScreen from './screens/ExpiredScreen';
+const Stack = createStackNavigator();
 export default class ActivityDemoComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: 'Demo text for custom edit menu' };
+    this.state = {
+      text: 'Demo text for custom edit menu',
+      isLoading: true,
+      isValid: true,
+      invalidReason: 'expired'
+    };
+  }
+
+  async componentDidMount() {
+    const data = await this.performTimeConsumingTask();
+    if (data !== null) {
+      this.setState({ isLoading: false });
+    }
+  }
+
+  performTimeConsumingTask = async() => {
+    return new Promise((resolve) =>
+      setTimeout(
+        () => { resolve('result') },
+        5000
+      )
+    );
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native ({this.props.buildType})!
-        </Text>
-        <Text style={styles.instructions}>
-          <Text>To get started, edit </Text>
-          <Text style={styles.bold}>index.js</Text>
-          <Text>.</Text>
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
-        {
-          Platform.select({
-            android: (
-              <TextInput
-                style={styles.textInput}
-                value={this.state.text}
-                onChangeText={(text) => this.setState({text})}
-              />)
-          })
+    if (this.state.isLoading) { //Load auth, data etc..
+      return (<SplashScreen />);
+    } else {
+      if(this.state.isValid) { //Valid user, show app
+        return (
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{
+              headerShown: false
+            }}>
+              <Stack.Screen name="Home" component={HomeScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        );
+      } else {//invalid user (expired,unknown)
+        if (this.state.invalidReason == 'expired') {
+          return (<ExpiredScreen />);
+        } else if (this.state.invalidReason == 'unknown_user') {
+          return (<UnknownUserScreen />);
         }
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => activityStarter.navigateToExample()}
-            title='Play Video'
-          />
-          <Button
-            onPress={async () => {
-              try {
-                var name = await activityStarter.getActivityNameAsPromise();
-                alert(name);
-              } catch (e) {
-                alert("Error: " + e.message);
-              }
-            }}
-            title='Get activity name as promise'
-          />
-          {/* <Button
-            onPress={() => NativeModules.Clipboard.setString("Copied to clipboard from JavaScript!")}
-            title='Copy to clipboard'
-          /> */}
-          <Button
-            onPress={() => activityStarter.callJavaScript()}
-            title='Call JavaScript from Java'
-          />
-        </View>
-      </View>
-    );
+      }
+
+    }
   }
 }
 
-const styles = StyleSheet.create({
-  bold: {
-    fontWeight: "bold",
-  },
-  buttonContainer: {
-    height: 300,
-    width: "80%",
-    justifyContent: 'space-between',
-    marginTop: 30,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#E5ECFF',
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  textInput: {
-    backgroundColor: 'white',
-    borderColor: 'gray',
-    borderWidth: 1,
-    height: 40,
-    marginTop: 20,
-    textAlign: "center",
-    width: "80%",
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-});
-
 AppRegistry.registerComponent('ActivityDemoComponent', () => ActivityDemoComponent);
-
-const eventEmitter = new NativeEventEmitter(eventEmitterModule);
-eventEmitter.addListener(eventEmitterModule.MyEventName, (params) => {
-  exposedToJava.setMessage(params);
-  alert(params);
-});

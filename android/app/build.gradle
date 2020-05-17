@@ -167,6 +167,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-safe-area-context')
+    implementation project(':react-native-gesture-handler')
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-4'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

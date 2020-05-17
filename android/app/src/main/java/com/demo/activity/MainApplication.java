@@ -6,6 +6,8 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.ReactApplication;
+import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -60,7 +62,9 @@ public final class MainApplication extends Application implements ReactApplicati
         protected List<ReactPackage> getPackages() {
             return Arrays.asList(
                     new ActivityStarterReactPackage(),
-                    new MainReactPackage()
+                    new MainReactPackage(),
+            new SafeAreaContextPackage(),
+            new RNGestureHandlerPackage()
             );
         }
     };
