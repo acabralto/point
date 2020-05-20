@@ -5,12 +5,14 @@ import {
   Text,
   View,
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from './screens/SplashScreen';
 import HomeScreen from './screens/HomeScreen';
 import UnknownUserScreen from './screens/UnknownUserScreen';
 import ExpiredScreen from './screens/ExpiredScreen';
+import * as Config from './config';
 const Stack = createStackNavigator();
 export default class ActivityDemoComponent extends Component {
   constructor(props) {
@@ -18,25 +20,29 @@ export default class ActivityDemoComponent extends Component {
     this.state = {
       text: 'Demo text for custom edit menu',
       isLoading: true,
-      isValid: true,
-      invalidReason: 'expired'
+      isValid: false,
+      invalidReason: ''
     };
   }
 
   async componentDidMount() {
-    const data = await this.performTimeConsumingTask();
-    if (data !== null) {
-      this.setState({ isLoading: false });
-    }
-  }
+    let that = this;
+    DeviceInfo.getAndroidId().then(androidId => {
+      console.log(`Android ID : ${androidId}`);
+      fetch('http://api.point5.live/api/auth/' + androidId)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.auth.status) {
+          that.setState({isLoading: false, isValid: true})
+        } else {
+          that.setState({isLoading: false, isValid: false, invalidReason: 'expired'}); //TODO: change this to response `invalidReason` for invalid accounts, implement more complex auth FIRST! on API
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    });
 
-  performTimeConsumingTask = async() => {
-    return new Promise((resolve) =>
-      setTimeout(
-        () => { resolve('result') },
-        5000
-      )
-    );
   }
 
   render() {
