@@ -5,52 +5,27 @@ import {
   View,
   SafeAreaView,
   FlatList,
-  TouchableOpacity,
   ScrollView
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-function onPress() {
-  console.log(`button pressed`);
-}
-function Item({ title }) {
-  return (
-      <TouchableOpacity
-          onPress={onPress}
-        >
-      <View style={styles.item}>
-          <Text style={styles.title}>{title}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-}
+import SplashScreen from './SplashScreen';
+import  PosterCard from '../components/PosterCard';
 export default class HomeScreen extends Component {
-    constructor() {
-      super();
-      this.data = [
-        {
-          id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-          title: 'First Item',
-        },
-        {
-          id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-          title: 'Second Item',
-        },
-        {
-          id: '58694a0f-3da1-471f-bd96-145571e29d72',
-          title: 'Third Item',
-        },
-      ];
+    constructor(props) {
+      super(props);
+      this.state = {
+        menuLoaded: false,
+        selectedItem: null,
+        focusedItem: null
+      }
     }
-    //TODO: complete home by building an api endpoint with types and data
     async componentDidMount() {
       let that = this;
       DeviceInfo.getAndroidId().then(androidId => {
-        console.log('http://api.point5.live/api/buildMenu/' + androidId);
         fetch('http://api.point5.live/api/buildMenu/' + androidId)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-          //use data to populate everything
+          that.setState({menu: data, menuLoaded: true});
         })
         .catch((error) => {
           console.error(error);
@@ -58,89 +33,59 @@ export default class HomeScreen extends Component {
       });
     }
 
+    focusedItem(item) {
+      this.setState({focusedItem: item});
+    }
+
+    selectedItem(item) {
+      this.setState({selectedItem: item});
+    }
+
     render() {
-      return (
-        <View style={style.wrapBox}>
-          <SafeAreaView style={styles.container}>
-            <ScrollView>
-              <Text>Cat 1</Text>
+      let data = this.state.menu;
+      if (this.state.menuLoaded) {
+        let rowList = [];
+        for (key in data) {
+          let variation = data[key].variation;
+          rowList.push((
+            <View>
+              <Text style={{color:'white', margin: 20, fontSize: 18}}>{data[key].title}</Text>
               <FlatList
-                data={this.data}
-                horizontal={true}
-                renderItem={({ item }) => <Item title={item.title} />}
-                keyExtractor={item => item.id}
-              />
-              <Text>Cat 2</Text>
-              <FlatList
-                data={this.data}
-                horizontal={true}
-                renderItem={({ item }) => <Item title={item.title} />}
-                keyExtractor={item => item.id}
-              />
-              <Text>Cat 2</Text>
-              <FlatList
-                data={this.data}
-                horizontal={true}
-                renderItem={({ item }) => <Item title={item.title} />}
-                keyExtractor={item => item.id}
-              />
-              <Text>Cat 2</Text>
-              <FlatList
-                data={this.data}
-                horizontal={true}
-                renderItem={({ item }) => <Item title={item.title} />}
-                keyExtractor={item => item.id}
-              />
-              <Text>Cat 2</Text>
-              <FlatList
-                data={this.data}
-                horizontal={true}
-                renderItem={({ item }) => <Item title={item.title} />}
-                keyExtractor={item => item.id}
-              />
-              <Text>Cat 2</Text>
-              <FlatList
-                data={this.data}
-                horizontal={true}
-                renderItem={({ item }) => <Item title={item.title} />}
-                keyExtractor={item => item.id}
-              />
-              <Text>Cat 2</Text>
-              <FlatList
-                data={this.data}
-                horizontal={true}
-                renderItem={({ item }) => <Item title={item.title} />}
-                keyExtractor={item => item.id}
-              />
-            </ScrollView>
-          </SafeAreaView>
-        </View>
-      );
+                  data={data[key].rows}
+                  horizontal={true}
+                  renderItem={({ item }) => (<PosterCard item={item} variation={variation} selectedItem={(item) => this.selectedItem(item)} focusedItem={(item) => this.focusedItem(item)} />)}
+                  keyExtractor={item => item.content_id}
+                />
+            </View>
+          ));
+        }
+        return (
+          <View style={style.wrapBox}>
+            <SafeAreaView style={style.container}>
+
+              <View style={{ height:200, backgroundColor: 'black'}}>
+                <Text style={{color:'white', fontSize: 40}}>{this.state.focusedItem != null ? this.state.focusedItem.title : ""}</Text>
+              </View>
+
+              <ScrollView>
+              {rowList}
+              </ScrollView>
+            </SafeAreaView>
+          </View>
+        );
+      } else {
+        return (<SplashScreen />);
+      }
     }
 }
 const style = StyleSheet.create({
   wrapBox: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
     color: 'black',
-    flex: 1
-  }
-});
-
-const styles = StyleSheet.create({
+    flex: 1,
+    backgroundColor: 'black',
+  },
   container: {
-    flex: 1
-  },
-  item: {
-    backgroundColor: '#e1eb34',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    height: 90
-  },
-  title: {
-    fontSize: 32,
-    color: 'black'
-  },
+    flex: 1,
+    margin: 30
+  }
 });

@@ -62,7 +62,7 @@ export default class ActivityDemoComponent extends Component {
       } else {//invalid user (expired,unknown)
         if (this.state.invalidReason == 'expired') {
           return (<ExpiredScreen />);
-        } else if (this.state.invalidReason == 'unknown_user') {
+        } else if (this.state.invalidReason == 'unknown') {
           return (<UnknownUserScreen />);
         }
       }

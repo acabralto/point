@@ -6,6 +6,7 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.ReactApplication;
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -64,6 +65,7 @@ public final class MainApplication extends Application implements ReactApplicati
             return Arrays.asList(
                     new ActivityStarterReactPackage(),
                     new MainReactPackage(),
+            new LinearGradientPackage(),
             new RNDeviceInfo(),
             new SafeAreaContextPackage(),
             new RNGestureHandlerPackage()
